@@ -1,6 +1,4 @@
-export const config = { api: { bodyParser: false } };
-
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: 'OPENAI_API_KEY is not configured' });
   const chunks = [];
@@ -33,3 +31,6 @@ export default async function handler(req, res) {
   const summary = data.output?.flatMap(x => x.content || []).find(x => x.type === 'output_text')?.text || '已完成识别';
   return res.status(200).json({ summary });
 }
+
+handler.config = { api: { bodyParser: false } };
+module.exports = handler;
